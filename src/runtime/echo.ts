@@ -27,17 +27,11 @@ export class Echo extends BaseEcho {
 
     if (this.options.authModule && this.ctx.app.$auth) {
       const strategy = this.ctx.app.$auth.strategy
+      const tokenName = strategy.options.token.name || 'Authorization'
+      const token = strategy.token.get()
 
-      if (strategy.options.name === 'laravelSanctum') {
-        headers.referer = location.origin
-        headers.Authorization = 'Bearer ' + this.ctx.app.$auth.$storage.getCookies()['XSRF-TOKEN']
-      } else {
-        const tokenName = strategy.options.token.name || 'Authorization'
-        const token = strategy.token.get()
-
-        if (token) {
-          headers[tokenName] = token
-        }
+      if (token) {
+        headers[tokenName] = token
       }
     }
 
